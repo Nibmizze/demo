@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.woyee.mapper.TermMapper">
+		
+	<select id="showCount" resultType="int">
+  		<![CDATA[
+  			SELECT count(*) FROM T_TERM
+  		]]>
+  		<where>
+  			<if test="null !=name and name !=''">
+  				and name like '%${name}%'
+  			</if>
+  			<if test="null !=type and type !=''">
+  				and type = '${type}'
+  			</if>
+  			<if test="null !=mid and mid !=''">
+  				and mid = '${mid}'
+  			</if>
+  			<if test="null !=tid and tid !=''">
+  				and tid = '${tid}'
+  			</if>
+  			<if test="null !=belong and belong !=''">
+  				and belong like '%${belong}%'
+  			</if>
+  			<if test="null !=model and model !=''">
+  				and model = '${model}'
+  			</if>
+  			<if test="null !=serial_nu and serial_nu !=''">
+  				and serial_nu = '${serial_nu}'
+  			</if>
+  			<if test="null !=state and state !=''">
+  				and state = '${state}'
+  			</if>
+  			<!-- <if test="null !=store_id and store_id !=''">
+  				and store_id = '${store_id}'
+  			</if> -->
+  			<if test="null!=store_id and '1'.toString()==store_id.length()">
+  				and store_id like '${store_id}%'
+  			</if>
+  			<if test="null!=store_id and ''!=store_id and '1'.toString()!=store_id.length()">
+  				and store_id = '${store_id}'
+  			</if>
+  			<if test="null !=sales_id and sales_id !=''">
+  				and sales_id = '${sales_id}'
+  			</if>
+  			<if test="null != sdate and sdate !=''">
+  			    <![CDATA[
+  				and DATA_DATE >= '${sdate}'
+  				]]>
+  			</if>
+  			<if test="null != edate and edate !=''">
+  			    <![CDATA[
+  				and DATA_DATE <= '${edate}'
+  				]]>
+  			</if>
+  		</where>
+	</select>
+
+	<select id="queryTerms" resultType="Term" parameterType="TermVo">
+	 <!-- select * from (select t.*,rownum AS rn from  (select a.*,b.store_name storeName,c.salesman salesMan from T_TERM a,T_STORE b,T_SALES c -->
+	    <![CDATA[
+	    select * from (select t.*,rownum AS rn from  (select a.* from T_TERM a
+		]]>
+		<where>
+  			<if test="null !=name and name !=''">
+  				and name like '%${name}%'
+  			</if>
+  			<if test="null !=type and type !=''">
+  				and type = '${type}'
+  			</if>
+  			<if test="null !=mid and mid !=''">
+  				and mid = '${mid}'
+  			</if>
+  			<if test="null !=tid and tid !=''">
+  				and tid = '${tid}'
+  			</if>
+  			<if test="null !=belong and belong !=''">
+  				and belong like '%${belong}%'
+  			</if>
+  			<if test="null !=model and model !=''">
+  				and model = '${model}'
+  			</if>
+  			<if test="null !=serial_nu and serial_nu !=''">
+  				and serial_nu = '${serial_nu}'
+  			</if>
+  			<if test="null !=state and state !=''">
+  				and state = '${state}'
+  			</if>
+  			<!-- <if test="null !=store_id and store_id !=''">
+  				and store_id = '${store_id}'
+  			</if> -->
+  			<if test="null!=store_id and '1'.toString()==store_id.length()">
+  				and store_id like '${store_id}%'
+  			</if>
+  			<if test="null!=store_id and ''!=store_id and '1'.toString()!=store_id.length()">
+  				and store_id = '${store_id}'
+  			</if>
+  			<if test="null !=sales_id and sales_id !=''">
+  				and sales_id = '${sales_id}'
+  			</if>
+  			<if test="null != sdate and sdate !=''">
+  			    <![CDATA[
+  				and DATA_DATE >= '${sdate}'
+  				]]>
+  			</if>
+  			<if test="null != edate and edate !=''">
+  			    <![CDATA[
+  				and DATA_DATE <= '${edate}'
+  				]]>
+  			</if>
+  			<!-- and a.store_id = b.store_id and a.sales_id = c.sales_id -->
+  		</where>
+  		<![CDATA[
+		order by up_time desc) t)  where rn>#{spage} and rn<=#{epage}
+		]]>
+	</select>
+	
+	<!-- excel导入添加终端信息 -->
+	<insert id="addTerm">
+		<![CDATA[
+  			insert into T_TERM(name,type,mid,tid,belong,model,serial_nu,state,data_date,deposit,store_id,sales_id,up_time)
+  			values(#{name}, #{type}, #{mid}, #{tid}, #{belong}, #{model}, #{serial_nu},
+  			 #{state}, #{data_date}, #{deposit}, #{store_id}, #{sales_id},#{up_time})
+  		]]>
+	</insert>
+	
+	<select id="showDatalist" resultType="Term" parameterType="String">
+  		<![CDATA[
+  			SELECT * FROM T_TERM
+  		]]>
+  		<where>
+  		    <if test="null !=kinfo and kinfo !=''">
+  				and tid like '${kinfo}%'
+  			</if>
+  		</where>
+	</select>
+	
+	<update id="updateState" parameterType="String">
+	    update t_term set state = #{state} where tid = #{tid} and mid = #{mid} and type = #{type}
+	</update>
+	
+	<select id="showSterm" resultType="Term" parameterType="String">
+  		<![CDATA[
+  			SELECT * FROM T_TERM
+  		]]>
+  		<where>
+  		    <if test="null !=tid and tid !=''">
+  				and tid = #{tid}
+  			</if>
+  			<if test="null !=mid and mid !=''">
+  				and mid = #{mid}
+  			</if>
+  			<if test="null !=type and type !=''">
+  				and type = #{type}
+  			</if>
+  		</where>
+	</select>
+	
+	<update id="updateDetailinfo" parameterType="Term">
+	    update t_term 
+	    <set>
+	      <if test="null !=belong and belong !=''">
+	          belong = #{belong},
+	      </if>
+	      <if test="null !=model and model !=''">
+	          model = #{model},
+	      </if>
+	      <if test="null !=serial_nu and serial_nu !=''">
+	          serial_nu = #{serial_nu},
+	      </if>
+	      <if test="null !=deposit and deposit !=''">
+	          deposit = #{deposit},
+	      </if>
+	      <if test="null !=store_id and store_id !=''">
+  			  store_id = #{store_id},
+  		  </if>
+  		  <if test="null !=sales_id and sales_id !=''">
+  			  sales_id = #{sales_id},
+  		  </if>
+	          up_time = to_char(sysdate,'YYYY-MM-DD hh24:mi:ss')
+	    </set>
+	   where tid = #{tid} and mid = #{mid} and type = #{type}
+	</update>
+	
+	<select id="selSa" resultType="Sales" parameterType="String">
+  		<![CDATA[
+  			SELECT STORE_ID storeId,SALES_ID salesId,SALESMAN,LINKTEL,STATE FROM T_SALES WHERE SALES_ID=#{salesid}
+  		]]>
+	</select>
+	
+	<select id="selSo" resultType="Store" parameterType="String">
+  		<![CDATA[
+  			SELECT STORE_ID storeId,STORE_NAME storeName,LINKMAN,LINKTEL,STATE,ADDRESS FROM T_STORE WHERE STORE_ID=#{storeid}
+  		]]>
+	</select>
+</mapper>

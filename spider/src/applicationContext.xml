@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+	  ">
+	<context:property-placeholder location="classpath:db.properties" />
+	<bean id="ds" class="org.apache.commons.dbcp.BasicDataSource"
+		p:driverClassName="${db.driver}"
+		p:url="${db.url}"
+		p:username="${db.username}"
+		p:password="${db.password}"
+		p:maxIdle="${db.maxIdle}"
+		p:maxActive="${db.maxActive}"
+		p:maxWait="${db.maxWait}"
+		p:initialSize="${db.initialSize}"
+		p:minIdle="${db.minIdle}"
+	/>
+	<context:component-scan base-package="com.woyee"/>
+
+	<!-- 配置事务管理器 -->
+	<bean id = "ts" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="ds"></property>
+	</bean>
+	<tx:advice id="txAdvice" transaction-manager="ts">
+		 <!-- 通用的CRUD操作 -->
+         <tx:attributes>  
+             <tx:method name="save*" propagation="REQUIRED" />  
+             <tx:method name="update*" propagation="REQUIRES_NEW"/>  
+             <tx:method name="del*" />  
+             <tx:method name="get*" read-only="true"/>
+             <tx:method name="list*" read-only="true"/>  
+             <tx:method name="find*" read-only="true"/>  
+             <tx:method name="query*" read-only="true"/> 
+             <tx:method name="select*" read-only="true"/>  
+		  	 <tx:method name="*"/>  
+          </tx:attributes>  
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut expression="execution(*  com.woyee.service.*.*(..))" id="txPoint"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
+	</aop:config>
+	
+	<!-- 配置视图解析器 -->
+	  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	  	<property name="prefix" value="/WEB-INF/jsp/"></property>
+	  	<property name="suffix" value=".jsp"></property>
+	  </bean>
+	
+	<!-- 配置mybatis中的 SqlSessionFactory-->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 配置数据源 -->
+  		<property name="dataSource" ref="ds" />
+  		<!--读取mybatis-cfg.xml中一些常用配置-->
+  		<property name="configLocation" value = "classpath:mybatis-cfg.xml"/>
+	</bean>
+	<!-- 配置映射器 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 扫描基包 -->
+  		<property name="basePackage" value="com.woyee.mapper" />
+  		<!-- 配置sqlSessionFactory-->
+  		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+	
+</beans>

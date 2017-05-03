@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.woyee.mapper.MerchantMapper">
+		
+	<select id="showCount" resultType="int" parameterType="MerchantVo">
+  		<![CDATA[
+  			SELECT count(*) FROM T_ACOMA
+  		]]>
+  		<where>
+  			<if test="null !=mid and mid !=''">
+  				and MID = '${mid}'
+  			</if>
+  			<if test="null !=trans_name and trans_name !=''">
+  				and TRANS_NAME = '${trans_name}'
+  			</if>
+  			<if test="null !=state and state !=''">
+	  			<if test='"S" == state '>
+	  				AND R_FLAG !='R' AND C_FLAG !='C'
+	  			</if>
+	  			<if test='"D" == state'>
+	  			    AND R_FLAG = 'R'
+	  			</if>
+	  			<if test='"C"== state'>
+	  			    AND C_FLAG = 'C'
+	  			</if>
+  			</if>
+  			<if test="null !=dcflag and dcflag !=''">
+  				and DCFLAG = '${dcflag}'
+  			</if>
+  			<if test="null != sdate and sdate !=''">
+  			    <![CDATA[
+  				and DATA_DATE >= '${sdate}'
+  				]]>
+  			</if>
+  			<if test="null != edate and edate !=''">
+  			    <![CDATA[
+  				and DATA_DATE <= '${edate}'
+  				]]>
+  			</if>
+  		</where>
+	</select>
+
+	<select id="showMerchants" resultType="Merchant" parameterType="MerchantVo">
+	    <![CDATA[
+		select *  from (select t.*,rownum AS rn from  (select * from t_acoma a  
+		]]>
+		<where>
+  			<if test="null !=mid and mid !=''">
+  				and MID = '${mid}'
+  			</if>
+  			<if test="null !=dcflag and dcflag !=''">
+  				and DCFLAG = '${dcflag}'
+  			</if>
+  			<if test="null !=trans_name and trans_name !=''">
+  				and TRANS_NAME = '${trans_name}'
+  			</if>
+  			<if test="null !=state and state !=''">
+	  			<if test='"S" == state '>
+	  				AND R_FLAG !='R' AND C_FLAG !='C'
+	  			</if>
+	  			<if test='"D" == state'>
+	  			    AND R_FLAG = 'R'
+	  			</if>
+	  			<if test='"C"== state'>
+	  			    AND C_FLAG = 'C'
+	  			</if>
+  			</if>
+  			<if test="null != sdate and sdate !=''">
+  			    <![CDATA[
+  				and DATA_DATE >= '${sdate}'
+  				]]>
+  			</if>
+  			<if test="null != edate and edate !=''">
+  			    <![CDATA[
+  				and DATA_DATE <= '${edate}'
+  				]]>
+  			</if>
+  		</where>
+  		<![CDATA[
+		order by tdate desc) t)  where rn>#{spage} and rn<=#{epage}
+		]]>
+	</select>
+	
+	<select id="exportByInfo" resultType="MerchantVo" parameterType="MerchantVo">
+	    <![CDATA[
+	    SELECT * FROM T_ACOMA 
+	    ]]>
+		<where>
+  			<if test="null !=mid and mid !=''">
+  				and MID = '${mid}'
+  			</if>
+  			<if test="null !=trans_name and trans_name !=''">
+  				and TRANS_NAME = '${trans_name}'
+  			</if>
+  			<if test="null !=state and state !=''">
+	  			<if test='"S" == state '>
+	  				AND R_FLAG !='R' AND C_FLAG !='C'
+	  			</if>
+	  			<if test='"D" == state'>
+	  			    AND R_FLAG = 'R'
+	  			</if>
+	  			<if test='"C"== state'>
+	  			    AND C_FLAG = 'C'
+	  			</if>
+  			</if>
+  			<if test="null !=dcflag and dcflag !=''">
+  				and DCFLAG = '${dcflag}'
+  			</if>
+  			<if test="null != sdate and sdate !=''">
+  			    <![CDATA[
+  				and DATA_DATE >= '${sdate}'
+  				]]>
+  			</if>
+  			<if test="null != edate and edate !=''">
+  			    <![CDATA[
+  				and DATA_DATE <= '${edate}'
+  				]]>
+  			</if>
+  		</where>
+		order by tdate desc
+	</select>
+</mapper>

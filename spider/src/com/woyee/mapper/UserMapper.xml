@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.woyee.mapper.UserMapper">
+
+	<!-- 用户登陆 -->
+	<select id="login" resultType="User">
+  		<![CDATA[
+  			SELECT USER_NAME username,passwd,role,member,mid,state,ins,SALES_ID salesid FROM LOGIN_USER WHERE USER_NAME=#{userName}
+  		]]>
+	</select>
+
+	<!-- 登陆日志 -->
+	<insert id="log">
+		<![CDATA[
+			insert into T_LOG(ID, USERNAME, LOGCONTENT, LOGLEVEL, LOGIN_IP, OPERATETIME, USERNO)
+			values(#{uuid},#{realName},'登陆','1',#{ip},#{date},#{userName})
+		]]>
+	</insert>
+
+	<!-- 查询登陆信息 -->
+	<select id="queryLog" resultType="LogInfo">
+		<![CDATA[
+			select USERNAME, LOGIN_IP loginIp, OPERATETIME FROM T_LOG WHERE ID=#{uuid}
+		]]>
+	</select>
+
+	<!-- 用户退出 -->
+	<update id="updatelog">
+		<![CDATA[
+			update T_LOG SET QUIT_TIME = #{date} WHERE ID=#{uuid}
+		]]>
+	</update>
+
+	<!-- 修改密码 -->
+	<update id="updatePwd">
+		<![CDATA[
+			update LOGIN_USER SET PASSWD=#{newPassword} WHERE USER_NAME=#{userName}
+		]]>
+	</update>
+
+	<!-- 修改密码日志 -->
+	<insert id="UpdatePwdLog">
+		<![CDATA[
+			insert into T_LOG(ID, USERNAME, LOGCONTENT, LOGLEVEL, LOGIN_IP, OPERATETIME, USERNO)
+			values(#{uuid},#{realName},'修改密码','2',#{ip},#{date},#{userName})
+		]]>
+	</insert>
+
+	<!-- 查询主菜单 -->
+	<select id="querymenu" resultType="Module">
+		<![CDATA[
+			SELECT MODULE_ID moduleId,MODULE_NAME moduleName,
+			FATHER_ID fatherId,PROGRAM_SOURCE programSource FROM T_MODULE WHERE FATHER_ID ='0'
+		]]>
+	</select>
+
+	<!-- 查询子菜单 -->
+	<select id="querySubmenu" resultType="ModuleVo">
+		<![CDATA[
+			SELECT * FROM T_MODULE WHERE FATHER_ID =#{moduleId}
+		]]>
+	</select>
+
+	<select id="queryMod" resultType="ModuleGroup" parameterType="String">
+		<![CDATA[
+			SELECT * FROM T_MODULE_GROUP WHERE GROUP_ID =#{role}
+		]]>
+	</select>
+	
+	<select id="queryFather" resultType="ModuleVo" parameterType="String">
+		<![CDATA[
+			SELECT * FROM T_MODULE WHERE MODULE_ID =#{module_id}
+		]]>
+	</select>
+	
+	<select id="querySon" resultType="ModuleGroup" parameterType="String">
+		<![CDATA[
+			SELECT * FROM T_MODULE_GROUP WHERE MODULE_ID =#{module_id} AND GROUP_ID =#{role}
+		]]>
+	</select>
+</mapper>

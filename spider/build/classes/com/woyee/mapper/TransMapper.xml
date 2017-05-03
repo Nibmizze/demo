@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.woyee.mapper.TransMapper">
+
+
+	<!-- count数量 -->
+	<select id="showCount" resultType="int" parameterType="Trans">
+  		<![CDATA[
+  			SELECT count(*) FROM T_JNLS
+  		]]>
+  		<where>
+  			<if test="null != orderpos and orderpos !=''">
+  				and ORDER_POS = '${orderpos}'
+  			</if>
+  			<if test="null !=type and type !='' and type ==1">
+  				and type = '${type}'
+  			</if>
+  			<if test="null !=type and type !='' and type !=1">
+  				and type not in ('1')
+  			</if>
+  			<if test="null !=mid and mid !=''">
+  				and mid = '${mid}'
+  			</if>
+  			<!-- <if test="null != storeid and storeid !=''">
+  				and store_id = '${storeid}'
+  			</if> -->
+  			<if test="null!=storeid and '1'.toString()==storeid.length()">
+  				and store_id like '${storeid}%'
+  			</if>
+  			<if test="null!=storeid and ''!=storeid and '1'.toString()!=storeid.length()">
+  				and store_id = '${storeid}'
+  			</if>
+  			<if test="null != salesid and salesid !=''">
+  				and sales_id = '${salesid}'
+  			</if>
+  			<if test="null !=stat and stat !=''">
+  				and stat = '${stat}'
+  			</if>
+  			<if test="null != sdate and sdate !=''">
+  			    <![CDATA[
+  				and TDATE >= '${sdate}'
+  				]]>
+  			</if>
+  			<if test="null != edate and edate !=''">
+  			    <![CDATA[
+  				and TDATE <= '${edate}'
+  				]]>
+  			</if>
+  		</where>
+	</select>
+
+<!-- 交易信息显示 -->
+	<select id="showTrans" resultType="Trans" parameterType="Trans">
+		<![CDATA[
+	    select * from (select t.*,rownum AS rn from  (SELECT (SELECT (CASE WHEN (M.MIDNAME IS NULL)
+	      THEN ''  ELSE M.MIDNAME END) FROM T_MERCH M 
+          WHERE J.MID=M.MID AND ROWNUM=1)AS MIDNAME, J.TRANSID,J.TRNAME,J.TYPE,J.SDATE SDATETIME,J.STIME,J.TDATE,
+	      J.TTIME,J.ORGDATE,J.ACTNO,J.EXPDATE,J.IPTMODE,J.AMT,J.CURCODE,J.CYCLENO,J.TRACENO,J.ORGTRNO,J.MID,J.TID,
+	      J.OPER,STAT,J.RSPCODE,J.RSPMSG,J.REFNO,J.ORGREFNO,J.AUTHCODE,J.STDATE,J.APTID,J.CRDTID,J.CRDNAME,J.STTID,J.INTID,
+	      J.CARD_RSPMSG CARDRSPMSG,J.CUPS_RSPMSG CUPSRSPMSG,J.SETTLE_RSPMSG SETTLERSPMSG,J.SUCFLAG,J.ORDER_POS ORDERPOS,
+	      J.ORDER_O2O ORDERO2O,J.STORE_ID STOREID,J.SALES_ID SALESID FROM T_JNLS J
+		]]>
+		<where>
+  			<if test="null != orderpos and orderpos !=''">
+  				and ORDER_POS = '${orderpos}'
+  			</if>
+  			<if test="null !=type and type !='' and type ==1">
+  				and type = '${type}'
+  			</if>
+  			<if test="null !=type and type !='' and type !=1">
+  				and type not in ('1')
+  			</if>
+  			<if test="null !=mid and mid !=''">
+  				and mid = '${mid}'
+  			</if>
+  			<!-- <if test="null != storeid and storeid !=''">
+  				and store_id = '${storeid}'
+  			</if> -->
+  			<if test="null!=storeid and '1'.toString()==storeid.length()">
+  				and store_id like '${storeid}%'
+  			</if>
+  			<if test="null!=storeid and ''!=storeid and '1'.toString()!=storeid.length()">
+  				and store_id = '${storeid}'
+  			</if>
+  			<if test="null != salesid and salesid !=''">
+  				and sales_id = '${salesid}'
+  			</if>
+  			<if test="null !=stat and stat !=''">
+  				and stat = '${stat}'
+  			</if>
+  			<if test="null != sdate and sdate !=''">
+  			    <![CDATA[
+  				and TDATE >= '${sdate}'
+  				]]>
+  			</if>
+  			<if test="null != edate and edate !=''">
+  			    <![CDATA[
+  				and TDATE <= '${edate}'
+  				]]>
+  			</if>
+  		</where>
+  		<![CDATA[
+		order by sdate desc,STIME desc) t)  where rn>#{spage} and rn<=#{epage}
+		]]>
+	</select>
+
+</mapper>

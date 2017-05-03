@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.woyee.mapper.StoreMapper">
+
+	<!-- 所有机构数 -->
+	<select id="showCount" resultType="int" parameterType="Store">
+  		<![CDATA[
+  			SELECT count(*) FROM T_STORE
+  		]]>
+	</select>
+
+	<!-- 查询所有机构 -->
+	<select id="showStores" resultType="Store" parameterType="Store">
+		<![CDATA[
+	    select * from (select t.*,rownum AS rn from  (SELECT store_id storeId,store_name storeName,
+	    linkman,linktel,STATE,address FROM T_STORE 
+		order by store_id) t)  where rn>#{spage} and rn<=#{epage}
+		]]>
+	</select>
+	
+	<!-- 添加机构 -->
+	<insert id="addStore">
+		<![CDATA[
+			insert into T_STORE(STORE_ID,STORE_NAME,LINKMAN,LINKTEL,ADDRESS)
+			values(#{storeId},#{storeName},#{linkMan},#{linkTel},#{address})
+		]]>
+	</insert>
+	
+	<!-- 添加机构为登录用户 -->
+	<insert id="addUser">
+		<![CDATA[
+			insert into LOGIN_USER(USER_NAME,ROLE,INS)
+			values(#{userName},'30',#{storeId})
+		]]>
+	</insert>
+	
+	<!-- 查询机构是否存在 -->
+	<select id="querySto" resultType="int">
+  		<![CDATA[
+  			SELECT count(*) FROM T_STORE WHERE STORE_ID=#{storeId}
+  		]]>
+	</select>
+	
+	<!-- 注销机构 -->
+	<update id="updateState">
+		<![CDATA[
+			UPDATE T_STORE SET STATE = '2' WHERE STORE_ID=#{storeid}
+		]]>
+	</update>
+	
+	<!-- 添加机构 -->
+	<insert id="updateStore">
+			update T_STORE SET 
+			<if test="storeName !=null and storeName !=''">
+			STORE_NAME = #{storeName},
+			</if>
+			<if test="linkMan !=null and linkMan !=''">
+			LINKMAN = #{linkMan},
+			</if>
+			<if test="linkTel !=null and linkTel !=''">
+			LINKTEL = #{linkTel},
+			</if>
+			<if test="address !=null and address !=''">
+			ADDRESS = #{address},
+			</if>
+			<if test="state !=null and state !=''">
+			STATE = #{state}
+			</if>
+			WHERE STORE_ID=#{storeId}
+	</insert>
+
+</mapper>

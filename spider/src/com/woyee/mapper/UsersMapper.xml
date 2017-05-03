@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.woyee.mapper.UsersMapper">
+
+	<!-- 所有机构数 -->
+	<select id="showCount" resultType="int" parameterType="User">
+  		<![CDATA[
+  			SELECT count(*) FROM LOGIN_USER
+  		]]>
+  		<where>
+  			<if test="null != ins and ins !=''">
+  				and ins = '${ins}'
+  			</if>
+  			<if test="null != salesid and salesid !=''">
+  				and sales_id = '${salesid}'
+  			</if>
+  			<if test="null != username and username !=''">
+  				and user_name = '${username}'
+  			</if>
+  			<if test="null != role and role !=''">
+  				and role = '${role}'
+  			</if>
+  			<if test="null != member and member !=''">
+  				and member = '${member}'
+  			</if>
+  			<if test="null != mid and mid !=''">
+  				and mid = '${mid}'
+  			</if>
+  			<if test="null != state and state !=''">
+  				and state = '${state}'
+  			</if>
+  		</where>
+	</select>
+
+	<!-- 查询所有机构 -->
+	<select id="showUsers" resultType="User" parameterType="User">
+		<![CDATA[
+		    select * from (select t.*,rownum AS rn from  (SELECT USER_NAME username,PASSWD,
+		    ROLE,MEMBER,MID,STATE,INS,SALES_ID salesid FROM LOGIN_USER
+	    ]]>
+	    <where>
+  			<if test="null != ins and ins !=''">
+  				and ins = '${ins}'
+  			</if>
+  			<if test="null != salesid and salesid !=''">
+  				and sales_id = '${salesid}'
+  			</if>
+  			<if test="null != username and username !=''">
+  				and user_name = '${username}'
+  			</if>
+  			<if test="null != role and role !=''">
+  				and role = '${role}'
+  			</if>
+  			<if test="null != member and member !=''">
+  				and member = '${member}'
+  			</if>
+  			<if test="null != mid and mid !=''">
+  				and mid = '${mid}'
+  			</if>
+  			<if test="null != state and state !=''">
+  				and state = '${state}'
+  			</if>
+  		</where>
+  		<![CDATA[
+	    	) t)  where rn>#{spage} and rn<=#{epage}
+		]]>
+	</select>
+	
+	<!-- 查询修改用户信息 -->
+	<select id="queryOneUser" resultType="User">
+		<![CDATA[
+  			SELECT USER_NAME username,PASSWD,ROLE,MEMBER,MID,
+  			STATE,INS,SALES_ID salesid FROM LOGIN_USER WHERE USER_NAME=#{username}
+  		]]>
+	</select>
+	
+	<!-- 查询机构表 -->
+	<select id="querySto" resultType="Store">
+		<![CDATA[
+			SELECT STORE_ID storeId,STORE_NAME storeName,LINKMAN,LINKTEL,STATE,ADDRESS FROM T_STORE
+		]]>
+	</select>
+	
+	<!-- 查询业务员表 -->
+	<select id="querySal" resultType="Sales">
+		<![CDATA[
+			SELECT store_id storeId,sales_id salesId,salesman,linktel,mail FROM T_SALES
+		]]>
+	</select>
+	
+	<!-- 添加用户 -->
+	<insert id="addUsers">
+			insert into LOGIN_USER(
+			<if test="null!= username and username !=''">
+				USER_NAME,
+			</if>
+			<if test="null!= role and role !=''">
+				ROLE,
+			</if>
+			<if test="null!= member and member !=''">
+				MEMBER,
+			</if>
+			<if test="null!= mid and mid !=''">
+				MID,
+			</if>
+			
+			<if test="null!= ins and ins !=''">
+				INS,
+			</if>
+			<if test="null!= salesid and salesid !=''">
+				SALES_ID,
+			</if>
+			<if test="null!= state and state !=''">
+				STATE
+			</if>
+			)
+			values(
+			<if test="null!= username and username !=''">
+				#{username},
+			</if>
+			<if test="null!= role and role !=''">
+				#{role},
+			</if>
+			<if test="null!= member and member !=''">
+				#{member},
+			</if>
+			<if test="null!= mid and mid !=''">
+				#{mid},
+			</if>
+			<if test="null!= ins and ins !=''">
+				#{ins},
+			</if>
+			<if test="null!= salesid and salesid !=''">
+				#{salesid},
+			</if>
+			<if test="null!= state and state !=''">
+				#{state}
+			</if>
+			)
+	</insert>
+	
+	<!-- 修改用户信息 -->
+	<update id="updateUser" parameterType="User">
+			UPDATE LOGIN_USER
+			<set>
+			<if test="username !=null and username !=''">
+				USER_NAME =#{username},
+			</if>
+			<if test="passwd !=null and passwd !=''">
+				PASSWD =#{passwd},
+			</if>
+			<if test="role !=null and role !=''">
+				ROLE =#{role},
+			</if>
+			<if test="member !=null and member !=''">
+				MEMBER =#{member},
+			</if>
+			<if test="mid !=null and mid !=''">
+				MID =#{mid},
+			</if>
+			<if test="state !=null and state !=''">
+				STATE =#{state},
+			</if>
+			<if test="ins !=null and ins !=''">
+				INS =#{ins},
+			</if>
+			<if test="salesid !=null and salesid !=''">
+				SALES_ID =#{salesid},
+			</if>
+		</set>
+		WHERE USER_NAME=#{username}
+	</update>
+	
+	<!-- 重置密码 -->
+	<update id="updatePwd">
+		<![CDATA[
+			UPDATE LOGIN_USER SET PASSWD=#{passwd} WHERE USER_NAME=#{username}
+		]]>
+	</update>
+	
+		<!-- 注销用户 -->
+	<update id="updateState">
+		<![CDATA[
+			UPDATE LOGIN_USER SET STATE = '1' WHERE USER_NAME=#{username}
+		]]>
+	</update>
+	
+</mapper>

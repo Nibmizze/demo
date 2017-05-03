@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="../css/menu.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+
+<script type="text/javascript">
+	$(function(){
+		$(".menutitler").click(function(){
+			var obj = $(this);
+		    $(obj).next().slideToggle("fast",function(){
+		    	if($(this).is(":hidden")){
+			    	$(obj).removeClass("menutitlerDown").addClass("menutitlerUp");
+			    }else{
+			    	$(obj).removeClass("menutitlerUp").addClass("menutitlerDown");
+			    }
+		    });
+		});
+		$(".menu_sidebar").mouseover(function(){
+			$(this).css("overflow","auto");
+		});
+		$(".menu_sidebar").mouseleave(function(){
+			$(this).css("overflow","hidden");
+		});
+		//展开菜单
+		$(".menutitler").click();
+	});
+	function openMenu(id,name,url,obj){
+		parent.addTab(id,name,url);
+		$(".menuselected").removeClass("menuselected").addClass("menuitem");
+		$(obj).removeClass("menuitem").addClass("menuselected");
+	}
+</script>
+
+</head>
+	<body>
+		<div class="menu_sidebar">
+	    	<div class="menubox">
+	    		<div class="menutitler menutitlerUp" id="menu_1">商户管理</div>
+	    		<div class="menuchild">
+	    			<div class="menuselected" onclick="openMenu('2230','商户信息管理','/spider/termController/showTerms.do',this);">商户信息管理</div>
+	    			<div class="menuitem" onclick="openMenu('2239','终端信息管理','/spider/merchantController/showAll.do',this);">商户流水管理</div>
+	    		</div>
+	    	</div>
+         	<div class="menubox">
+	    		<div class="menutitler menutitlerUp">交易管理</div>
+	    		<div class="menuchild">
+	    			<div class="menuitem" onclick="openMenu('2247','交易监控','UserAdd_page.html',this);">交易监控</div>
+					<div class="menuitem" onclick="openMenu('2248','交易查询','UserAdd_page.html',this);">交易查询</div>
+	    			<div class="menuitem" onclick="openMenu('2251','对账管理','UserAdd_page.html',this);">对账管理</div>
+	    			<div class="menuitem" onclick="openMenu('2259','交易汇总','UserAdd_page.html',this);">交易汇总</div>
+	    		</div>
+	    	</div>
+	    	<div class="menubox">
+	    		<div class="menutitler menutitlerUp">系统管理</div>
+	    		<div class="menuchild">
+					<div class="menuitem" onclick="openMenu('3','用户管理','UserAdd_page.html',this);">用户管理</div>
+					<div class="menuitem" onclick="openMenu('22','角色管理','UserAdd_page.html',this);">角色管理</div>
+					<div class="menuitem" onclick="openMenu('45','部门管理','UserAdd_page.html',this);">部门管理</div>
+					<div class="menuitem" onclick="openMenu('62','用户角色管理','UserAdd_page.html',this);">用户角色管理</div>
+					<div class="menuitem" onclick="openMenu('347','系统设置','UserAdd_page.html',this);">系统设置</div>
+					<div class="menuitem" onclick="openMenu('1813','字典数管理','UserAdd_page.html',this);">字典数管理</div>
+				</div>
+	    	</div>
+	    </div>
+	</body>
+</html>

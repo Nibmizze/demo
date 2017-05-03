@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.woyee.mapper.SalesMapper">
+
+	<!-- 所有业务员数 -->
+	<select id="showCount" resultType="int" parameterType="SALES">
+  		<![CDATA[
+  			SELECT count(*) FROM T_SALES
+  		]]>
+	</select>
+
+	<!-- 查询所有业务员 -->
+	<select id="showSales" resultType="Sales" parameterType="Sales">
+		<![CDATA[
+	    select * from (select t.*,rownum AS rn from  (SELECT store_id storeId,sales_id salesId,
+	    salesman,linktel,STATE,mail FROM T_SALES 
+		order by store_id) t)  where rn>#{spage} and rn<=#{epage}
+		]]>
+	</select>
+	
+	<!-- 添加业务员 -->
+	<insert id="addSales">
+		<![CDATA[
+			insert into T_SALES(STORE_ID,SALES_ID,SALESMAN,LINKTEL,MAIL)
+			values(#{storeId},#{salesId},#{salesMan},#{linkTel},#{mail})
+		]]>
+	</insert>
+	
+	<!-- 添加业务员为登录用户 -->
+	<insert id="addUser">
+		<![CDATA[
+			insert into LOGIN_USER(USER_NAME,ROLE,SALES_ID)
+			values(#{userName},'20',#{salesId})
+		]]>
+	</insert>
+	
+	<!-- 查询业务编号是否存在 -->
+	<select id="querySal" resultType="int">
+  		<![CDATA[
+  			SELECT count(*) FROM T_SALES WHERE SALES_ID=#{salesId}
+  		]]>
+	</select>
+	
+	<!-- 注销业务员 -->
+	<update id="updateState">
+		<![CDATA[
+			UPDATE T_SALES SET STATE = '2' WHERE SALES_ID=#{salesid}
+		]]>
+	</update>
+	
+</mapper>

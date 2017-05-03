@@ -1,0 +1,84 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0034)http://www.bejson.com/cronCreator/ -->
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> -->
+<HTML xmlns="http://www.w3.org/1999/xhtml"><HEAD>
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type"><LINK rel="shortcut icon" 
+href="favicon.ico"><TITLE></TITLE>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+<LINK rel="stylesheet" type="text/css" href="easyui.css">
+<LINK rel="stylesheet" type="text/css" href="icon.css">
+<SCRIPT type="text/javascript" src="jquery.min.js"></SCRIPT>
+
+<SCRIPT type="text/javascript" src="jquery.easyui.min.js"></SCRIPT>
+
+<STYLE type="text/css">
+.validateButtons.clear a[href^="/beifeng/"] {display:none!important;display:none}</STYLE>
+
+<META name="GENERATOR" content="MSHTML 9.00.8112.16659"></HEAD>
+<BODY>
+<DIV id="cronContainer">
+<DIV id="tt">
+<H3>Be Cron - 在线Cron表达式生成器</H3></DIV>
+<DIV id="cChoice">
+<DIV style="width: 700px; height: 250px;" class="easyui-tabs">
+<DIV style="padding: 10px;" title="分钟">
+<UL>
+  <LI><INPUT name="rMin" value="*" type="radio">周期 从 <INPUT style="width: 80px;" 
+  id="minStart" class="easyui-numberspinner" value="0" data-options="min:0,max:60">分钟开始,每<INPUT 
+  style="width: 80px;" id="minEnd" class="easyui-numberspinner" value="0" 
+  data-options="min:1,max:60">分钟执行一次</LI>
+  <LI><INPUT name="rMin" value="c" type="radio">指定 
+  <DIV id="minPanel"></DIV></LI></UL></DIV>
+<DIV style="padding: 10px;" title="小时">
+<UL>
+  <LI><INPUT id="hourId" name="rHour" value="*" type="radio">每小时 
+  <LI><INPUT id="hourId2" name="rHour" value="c" type="radio">指定 
+  <DIV id="hourPanel"></DIV></LI></UL></DIV>
+<DIV style="padding: 10px;" title="日">
+<UL>
+  <LI><INPUT id="dayId" name="rDay" value="*" type="radio">每日 
+  <LI><INPUT id="dayId2" name="rDay" value="c" type="radio">指定 
+  <DIV id="dayPanel"></DIV></LI></UL></DIV>
+<DIV style="padding: 10px;" title="月">
+<UL>
+  <LI><INPUT id="monId" name="rMon" value="?" type="radio">每月 
+  <LI><INPUT id="monId2" name="rMon" value="c" type="radio">指定 
+  <DIV id="monPanel"></DIV></LI></UL></DIV>
+<DIV style="padding: 10px;" title="星期">
+<UL>
+  <LI><INPUT id="weekId" name="rWeek" value="?" type="radio">每星期 
+  <LI><INPUT id="weekId2" name="rWeek" value="c" type="radio">指定 
+  <DIV id="weekPanel"></DIV></LI></UL></DIV></DIV></DIV>
+<DIV id="Cres">
+<FIELDSET><LEGEND>表达式</LEGEND>
+<DIV>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD></TD>
+    <TD>秒</TD>
+    <TD>分钟</TD>
+    <TD>小时</TD>
+    <TD>日</TD>
+    <TD>月</TD>
+    <TD>星期</TD></TR>
+  <TR>
+    <TD>表达式字段:</TD>
+    <TD><INPUT id="exSec"></TD>
+    <TD><INPUT id="exMin"></TD>
+    <TD><INPUT id="exHour"></TD>
+    <TD><INPUT id="exDay"></TD>
+    <TD><INPUT id="exMon"></TD>
+    <TD><INPUT id="exWeek"></TD></TR>
+  <TR>
+    <TD>Cron 表达式:</TD>
+    <TD colSpan="5"><INPUT style="width: 100%;" id="txtCron"></TD>
+    <TD><INPUT id="btnFan" value="反解析到UI " type="button"></TD></TR></TBODY></TABLE>
+</DIV></FIELDSET></DIV>
+<DIV id="Cbuttons"><INPUT id="btnGen" value="生成 cron表达式" type="button" icon="icon-search"><INPUT id="btnCopy" value="复制Cron表达式" type="button">
+</DIV></DIV>
+<SCRIPT src="common.js"></SCRIPT>
+
+<DIV>
+
+</DIV></BODY></HTML>

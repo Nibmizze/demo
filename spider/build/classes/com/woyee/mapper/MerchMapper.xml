@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.woyee.mapper.MerchMapper">
+
+	<select id="showCount" resultType="int" parameterType="Merch">
+  		<![CDATA[
+  			SELECT count(*) FROM T_MERCH
+  		]]>
+  		<where>
+  			<if test="null != midName and midName !=''">
+  				and midName like '%${midName}%'
+  			</if>
+  			<if test="null !=type and type !=''">
+  				and type = '${type}'
+  			</if>
+  			<if test="null !=mid and mid !=''">
+  				and mid = '${mid}'
+  			</if>
+  			<!-- <if test="null != storeid and storeid !=''">
+  				and store_id = '${storeid}'
+  			</if> -->
+  			<if test="null!=storeid and '1'.toString()==storeid.length()">
+  				and store_id like '${storeid}%'
+  			</if>
+  			<if test="null!=storeid and ''!=storeid and '1'.toString()!=storeid.length()">
+  				and store_id = '${storeid}'
+  			</if>
+  			<if test="null != salesid and salesid !=''">
+  				and sales_id = '${salesid}'
+  			</if>
+  			<if test="null !=state and state !=''">
+  				and state = '${state}'
+  			</if>
+  			<if test="null != sdate and sdate !=''">
+  			    <![CDATA[
+  				and DATA_DATE >= '${sdate}'
+  				]]>
+  			</if>
+  			<if test="null != edate and edate !=''">
+  			    <![CDATA[
+  				and DATA_DATE <= '${edate}'
+  				]]>
+  			</if>
+  		</where>
+	</select>
+
+	<!-- 商户信息显示 -->
+	<select id="queryMerchs" resultType="Merch" parameterType="Merch">
+		<![CDATA[
+	    select * from (select t.*,rownum AS rn from  (SELECT MID,MIDNAME,TYPE,D_FEE DFEE,C_FEE 
+		CFEE, D_TOP DTOP,O2O_FEE O2OFEE,LINKMAN,LINKTEL,ADDRESS,BRANCH, 
+		ACC_NAME ACCNAME,ACC_NO ACCNO,store_id storeid,sales_id salesid,DATA_DATE 
+		datadate, UP_TIME upTime, STATE,CHANNEL FROM T_MERCH 
+		]]>
+		<where>
+  			<if test="null != midName and midName !=''">
+  				and midName like '%${midName}%'
+  			</if>
+  			<if test="null !=type and type !=''">
+  				and type = '${type}'
+  			</if>
+  			<if test="null !=mid and mid !=''">
+  				and mid = '${mid}'
+  			</if>
+  			<!-- <if test="null != storeid and storeid !=''">
+  				and store_id = '${storeid}'
+  			</if> -->
+  			<if test="null!=storeid and '1'.toString()==storeid.length()">
+  				and store_id like '${storeid}%'
+  			</if>
+  			<if test="null!=storeid and ''!=storeid and '1'.toString()!=storeid.length()">
+  				and store_id = '${storeid}'
+  			</if>
+  			<if test="null != salesid and salesid !=''">
+  				and sales_id = '${salesid}'
+  			</if>
+  			<if test="null !=state and state !=''">
+  				and state = '${state}'
+  			</if>
+  			<if test="null != sdate and sdate !=''">
+  			    <![CDATA[
+  				and DATA_DATE >= '${sdate}'
+  				]]>
+  			</if>
+  			<if test="null != edate and edate !=''">
+  			    <![CDATA[
+  				and DATA_DATE <= '${edate}'
+  				]]>
+  			</if>
+  		</where>
+  		<![CDATA[
+		order by UP_TIME desc) t)  where rn>#{spage} and rn<=#{epage}
+		]]>
+	</select>
+
+	<!-- 查询唯一商户信息 -->
+	<select id="queryMerch" resultType="int">
+		<![CDATA[
+  			SELECT count(*) FROM T_MERCH WHERE MID=#{id} and type=#{type}
+  		]]>
+	</select>
+
+	<!-- excel导入添加商户信息 -->
+	<insert id="addMerch">
+		<![CDATA[
+  			insert into T_MERCH(MID, MIDNAME, TYPE, D_FEE, C_FEE, D_TOP, O2O_FEE,
+  			 LINKMAN, LINKTEL, ADDRESS, BRANCH, ACC_NAME, ACC_NO, STATE, CHANNEL, 
+  			 STORE_ID, SALES_ID, DATA_DATE, UP_TIME)
+  			values(#{mid}, #{midName}, #{type}, #{dfee}, #{cfee}, #{dtop}, #{o2ofee},
+  			 #{linkMan}, #{linkTel}, #{address}, #{branch}, #{accname}, #{accno},
+  			 '1', #{channel}, #{storeid}, #{salesid}, #{date}, #{upTime})
+  		]]>
+	</insert>
+	
+	<!-- 查询机构表 -->
+	<select id="querySto" resultType="Store">
+		<![CDATA[
+			SELECT STORE_ID storeId,STORE_NAME storeName,LINKMAN,LINKTEL,STATE,ADDRESS FROM T_STORE
+		]]>
+	</select>
+	
+	<!-- 查询业务员 -->
+	<select id="querySal" resultType="Sales">
+		<![CDATA[
+			SELECT STORE_ID storeId,SALES_ID salesId,SALESMAN,LINKTEL,STATE FROM T_SALES WHERE STORE_ID=#{storeId}
+		]]>
+	</select>
+	
+	<!-- 注销用户 -->
+	<update id="updateState">
+		<![CDATA[
+			UPDATE T_MERCH SET STATE = '2', UP_TIME = #{upTime} WHERE MID=#{mid} AND TYPE=#{type}
+		]]>
+	</update>
+	
+	<!-- 查询修改商户信息 -->
+	<select id="queryOneMerch" resultType="Merch">
+		<![CDATA[
+  			SELECT MID, MIDNAME, TYPE, D_FEE dfee, C_FEE cfee, D_TOP dtop,
+  			O2O_FEE o2ofee, LINKMAN, LINKTEL, ADDRESS, BRANCH, ACC_NAME accname,
+  			ACC_NO accno, CHANNEL, STORE_ID storeid, SALES_ID salesid 
+  			FROM T_MERCH WHERE MID=#{mid} and type=#{type}
+  		]]>
+	</select>
+	
+	<!-- 修改用户信息 -->
+	<update id="updateInfo">
+			UPDATE T_MERCH
+			<set>
+			<if test="dfee!=null and dfee!=''">
+			D_FEE =#{dfee},
+			</if>
+			<if test="cfee!=null and cfee!=''">
+			C_FEE =#{cfee},
+			</if>
+			<if test="dtop!=null and dtop!=''">
+			D_TOP =#{dtop},
+			</if>
+			<if test="o2ofee!=null and o2ofee!=''">
+			O2O_FEE =#{o2ofee},
+			</if>
+			<if test="linkMan!=null and linkMan!=''">
+			LINKMAN =#{linkMan},
+			</if>
+			<if test="linkTel!=null and linkTel!=''">
+			LINKTEL =#{linkTel},
+			</if>
+			<if test="address!=null and address!=''">
+			ADDRESS =#{address},
+			</if>
+			<if test="branch!=null and branch!=''">
+			BRANCH =#{branch},
+			</if>
+			<if test="accname!=null and accname!=''">
+			ACC_NAME =#{accname},
+			</if>
+			<if test="accno!=null and accno!=''">
+			ACC_NO =#{accno},
+			</if>
+			<if test="channel!=null and channel!=''">
+			CHANNEL =#{channel},
+			</if>
+			<if test="upTime!=null and upTime!=''">
+			UP_TIME =#{upTime}
+			</if>
+		</set>
+		WHERE MID=#{mid} AND TYPE=#{type}
+	</update>
+
+</mapper>
